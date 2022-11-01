@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_unnecessary_containers
 
+import 'package:expenses/components/chart.dart';
 import 'package:expenses/components/transactions_form.dart';
 import 'package:flutter/material.dart';
 import 'package:expenses/models/transactions.dart';
@@ -27,7 +28,7 @@ class ExpensesApp extends StatelessWidget {
           ),
           textTheme: tema.textTheme.copyWith(
             headline6: const TextStyle(
-              fontFamily: 'Open Sans',
+              fontFamily: 'Quicksand',
               fontSize: 18,
               fontWeight: FontWeight.bold,
               color: Colors.black,
@@ -35,7 +36,7 @@ class ExpensesApp extends StatelessWidget {
           ),
           appBarTheme: const AppBarTheme(
               titleTextStyle: TextStyle(
-                  fontFamily: 'Open Sans',
+                  fontFamily: 'Quicksand',
                   fontSize: 20,
                   fontWeight: FontWeight.bold))),
     );
@@ -51,16 +52,33 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transactions> _transactions = [
-    Transactions(id: 't1', title: 'Tênis', value: 310.76, date: DateTime.now()),
     Transactions(
-        id: 't2', title: 'Conta de luz', value: 211.30, date: DateTime.now()),
+      id: 't0',
+      title: 'Tese',
+      value: 3102.76,
+      date: DateTime.now().subtract(const Duration(days: 33)),
+    ),
     Transactions(
-        id: 't3', title: 'Transação #3', value: 310.76, date: DateTime.now()),
+      id: 't1',
+      title: 'Tênis',
+      value: 310.76,
+      date: DateTime.now().subtract(const Duration(days: 3)),
+    ),
     Transactions(
-        id: 't4', title: 'Transação #4', value: 310.76, date: DateTime.now()),
-    Transactions(
-        id: 't5', title: 'Transação #5', value: 310.76, date: DateTime.now()),
+      id: 't2',
+      title: 'Conta de luz',
+      value: 211.30,
+      date: DateTime.now().subtract(const Duration(days: 4)),
+    ),
   ];
+
+  List<Transactions> get _recentTransactions {
+    //Esse where é o mesmo filter lá do javascript, aqui estamos filtrando para que todas as transações sejam apenas dos últimos 7 dias
+    return _transactions
+        .where((transaction) => transaction.date
+            .isAfter(DateTime.now().subtract(const Duration(days: 7))))
+        .toList();
+  }
 
   _addTransaction(String title, double value) {
     final newTransaction = Transactions(
@@ -101,15 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Container(
-              //estabelece que ocupará a tela toda
-              child: const Card(
-                //efeito de sombra sobre o card.
-                elevation: 5,
-                color: Colors.blue,
-                child: Text('Gráfico'),
-              ),
-            ),
+            Chart(_recentTransactions),
             TransactionList(_transactions),
           ],
         ),
