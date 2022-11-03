@@ -1,6 +1,7 @@
 import 'dart:html';
 import 'dart:js';
 
+import 'package:expenses/components/adaptative_button.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -49,57 +50,63 @@ class _TransactionFormState extends State<TransactionForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          children: [
-            TextField(
-              decoration: const InputDecoration(labelText: 'Título'),
-              controller: _titleController,
-              onSubmitted: (_) => _submitForm(),
-            ),
-            TextField(
-              keyboardType: TextInputType.number,
-              // Esse underline "_" quer dizer que é um parâmetro obriga´tório mas que não iremos usar
-              onSubmitted: (_) => _submitForm(),
-              decoration: const InputDecoration(
-                labelText: 'Valor (R\$)',
+    return SingleChildScrollView(
+      child: Card(
+        elevation: 5,
+        child: Padding(
+          padding: EdgeInsets.only(
+              top: 10,
+              right: 10,
+              left: 10,
+              //Esse media query serve para pegar o tamanho exato do teclado
+              bottom: 10 + MediaQuery.of(context).viewInsets.bottom),
+          child: Column(
+            children: [
+              TextField(
+                decoration: const InputDecoration(labelText: 'Título'),
+                controller: _titleController,
+                onSubmitted: (_) => _submitForm(),
               ),
-              controller: _valueController,
-            ),
-            Container(
-              height: 70,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(_selectedDate == null
-                        ? 'Nenhuma data selecionada!'
-                        : DateFormat('dd/MM/y').format(_selectedDate!)),
-                  ),
-                  TextButton(
-                    onPressed: _showDatePicker,
-                    child: const Text(
-                      'Selecionar data.',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
+              TextField(
+                keyboardType: TextInputType.number,
+                // Esse underline "_" quer dizer que é um parâmetro obriga´tório mas que não iremos usar
+                onSubmitted: (_) => _submitForm(),
+                decoration: const InputDecoration(
+                  labelText: 'Valor (R\$)',
+                ),
+                controller: _valueController,
+              ),
+              Container(
+                height: 70,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(_selectedDate == null
+                          ? 'Nenhuma data selecionada!'
+                          : DateFormat('dd/MM/y').format(_selectedDate!)),
                     ),
+                    TextButton(
+                      onPressed: _showDatePicker,
+                      child: const Text(
+                        'Selecionar data.',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Row(
+                children: [
+                  AdaptativeButton(
+                    label: 'Nova transação',
+                    onPressed: _submitForm(),
                   )
                 ],
-              ),
-            ),
-            Row(
-              children: [
-                ElevatedButton(
-                  onPressed: _submitForm,
-                  style: TextButton.styleFrom(foregroundColor: Colors.purple),
-                  child: const Text('Nova transação'),
-                ),
-              ],
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );
